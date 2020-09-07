@@ -1,5 +1,5 @@
 module.exports = app => {
-  const Courses = require("../controllers/Course.controller.js");
+  const Courses = require("../controllers/course.controller.js");
 
   var router = require("express").Router();
 
@@ -8,9 +8,6 @@ module.exports = app => {
 
   // Retrieve all Courses
   router.get("/", Courses.findAll);
-
-  // Retrieve all published Courses
-  router.get("/published", Courses.findAllPublished);
 
   // Retrieve a single Course with id
   router.get("/:id", Courses.findOne);

@@ -9,10 +9,10 @@ exports.create = (req, res) => {
       message: "Content can not be empty!"
     });
     return;
-  };
+  }
 
   // Create a Course
-  const Course = {
+  const course = {
     dept: req.body.dept,
     number: req.body.number,
     level: req.body.level,
@@ -22,7 +22,7 @@ exports.create = (req, res) => {
   };
 
   // Save Course in the database
-  Course.create(Course)
+  Course.create(course)
     .then(data => {
       res.send(data);
     })
@@ -31,29 +31,28 @@ exports.create = (req, res) => {
         message: err.message || "Some error occurred while creating the Course."
       });
     });
+};
 
-  // Retrieve all Courses from the database.
-  exports.findAll = (req, res) => {
-    const dept = req.query.dept;
-    var condition = dept ? {
-      dept: {
-        [Op.like]: `%${dept}%`
-      }
-    } : null;
+// Retrieve all Courses from the database.
+exports.findAll = (req, res) => {
+  const dept = req.query.dept;
+  var condition = dept ? {
+    dept: {
+      [Op.like]: `%${dept}%`
+    }
+  } : null;
 
-    Course.findAll({
-        where: condition
-      })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: err.message || "Some error occurred while retrieving tutorials."
-        });
+  Course.findAll({
+      where: condition
+    })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving tutorials."
       });
-  };
-
+    });
 };
 
 // Find a single Course with an id
@@ -73,11 +72,5 @@ exports.delete = (req, res) => {
 
 // Delete all Courses from the database.
 exports.deleteAll = (req, res) => {
-
-};
-
-// Find all published Courses
-exports.findAllPublished = (req, res) => {
-
 
 };

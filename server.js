@@ -10,7 +10,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-const db = require("models");
+const db = require("./models");
 db.sequelize.sync();
 
 db.sequelize.sync({
@@ -27,11 +27,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // simple route
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to course application."
-  });
-});
+
 // set routes
 
 require("./routes/course.routes")(app);
