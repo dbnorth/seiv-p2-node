@@ -1,5 +1,5 @@
 const db = require("../models");
-const Course = db.courses;
+const Course = db.course;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Course
@@ -13,6 +13,7 @@ exports.create = (req, res) => {
 
   // Create a Course
   const course = {
+    id: req.body.id,
     dept: req.body.dept,
     number: req.body.number,
     level: req.body.level,
@@ -57,6 +58,17 @@ exports.findAll = (req, res) => {
 
 // Find a single Course with an id
 exports.findOne = (req, res) => {
+  const id = req.params.id;
+
+  Course.findByPk(id)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Tutorial with id=" + id
+      });
+    });
 
 };
 

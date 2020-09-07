@@ -27,7 +27,8 @@ module.exports = (sequelize, Sequelize) => {
     description: {
       type: Sequelize.STRING
     }
+  }, {
+    tableName: 'course'
   });
-
   return Course;
 };
