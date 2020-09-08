@@ -4,7 +4,7 @@ on:
     pull_request:
         types: [closed]
         branches:
-            - develop
+            - dev
 
 jobs:
     aws-deploy:
@@ -12,10 +12,9 @@ jobs:
         steps:
             - uses: actions/checkout@v2
               with:
-                  ref: develop
+                  ref: dev
             - uses: actions/setup-node@v1
             - run: npm install
-            - run: npm run build
             - run: npm run bundle
             - name: Deploy to Server
               uses: easingthemes/ssh-deploy@v2.1.1
