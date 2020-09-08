@@ -1,6 +1,9 @@
 # binary
 bin/
 
+#deployment
+deploy
+
 # Logs
 logs
 *.log
