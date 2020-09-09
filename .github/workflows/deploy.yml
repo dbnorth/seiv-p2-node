@@ -37,6 +37,6 @@ jobs:
                       cd nodeapps/course-backend
                       npm install
                       sudo systemctl stop course-backend
-                      sudo cp /home/ubuntu/nodeapps/course/course-backend.service /lib/systemd/system/course-backend.service
+                      sudo cp course-backend.service /lib/systemd/system/course-backend.service
                       sudo systemctl daemon-reload
                       sudo systemctl start course-backend
