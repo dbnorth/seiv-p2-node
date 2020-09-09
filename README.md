@@ -2,7 +2,7 @@
 
 This project is the node backend for the Course app, implemented with Express.
 
-It also contains files for Deployment to AWS.
+It also contains files for Deployment to AWS. It uses npm run bundle to create the deploy directory.
 
 #### Prerequisites
 
