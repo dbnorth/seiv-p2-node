@@ -1,5 +1,6 @@
 module.exports = {
   HOST: 't0-database.czjofbims6cw.us-west-2.rds.amazonaws.com',
+  port: 3306,
   USER: 'admin',
   PASSWORD: 'passwordt0',
   DB: 'course',
