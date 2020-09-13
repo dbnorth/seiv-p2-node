@@ -1,0 +1,42 @@
+name: DEPLOY TO AWS
+
+on:
+    pull_request:
+        types: [closed]
+        branches:
+            - dev
+
+jobs:
+    aws-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  ref: dev
+            - uses: actions/setup-node@v1
+            - run: npm install
+            - run: npm run bundle
+            - name: Deploy to Server
+              uses: easingthemes/ssh-deploy@v2.1.1
+              env:
+                  SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+                  ARGS: '-rltgoDzvO --delete'
+                  SOURCE: 'deploy/'
+                  REMOTE_HOST: 'team0.eaglesoftwareteam.com'
+                  REMOTE_USER: ubuntu
+                  TARGET: 'nodeapps/course-backend'
+            - name: Execute SSH commmands on remote server
+              uses: JimCronqvist/action-ssh@master
+              env:
+                  NAME: 'Root'
+              with:
+                  hosts: 'ubuntu@team0.eaglesoftwareteam.com'
+                  privateKey: ${{ secrets.SERVER_SSH_KEY }}
+                  debug: false
+                  command: |
+                      cd nodeapps/course-backend
+                      npm install
+                      sudo systemctl stop course-backend
+                      sudo cp course-backend.service /lib/systemd/system/course-backend.service
+                      sudo systemctl daemon-reload
+                      sudo systemctl start course-backend
