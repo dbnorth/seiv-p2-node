@@ -1,5 +1,5 @@
 const db = require("../models");
-const Course = db.course;
+const Student = db.student;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Course
@@ -11,19 +11,18 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Course
-  const course = {
+  // Create a Student
+  const student = {
     id: req.body.id,
-    dept: req.body.dept,
-    number: req.body.number,
-    level: req.body.level,
-    hours: req.body.hours,
-    name: req.body.name,
-    description: req.body.description
+    idNumber: req.body.idNumber,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    major: req.body.major
   };
 
-  // Save Course in the database
-  Course.create(course)
+  // Save Student in the database
+  Student.create(student)
     .then(data => {
       res.send(data);
     })
@@ -34,16 +33,16 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve all Courses from the database.
-exports.findAll = (req, res) => {
-  const dept = req.query.dept;
-  var condition = dept ? {
-    dept: {
-      [Op.like]: `%${dept}%`
+// Retrieve  Student with idNumberfrom the database.
+exports.findIdNumber = (req, res) => {
+  const idNumber = req.query.idNumber;
+  var condition = idNumber ? {
+    idNumber: {
+      [Op.like]: `%${idNumber}%`
     }
   } : null;
 
-  Course.findAll({
+  Student.findAll({
       where: condition
     })
     .then(data => {
@@ -56,11 +55,11 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Course with an id
+// Find a single Student with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Course.findByPk(id)
+  Student.findByPk(id)
     .then(data => {
       res.send(data);
     })
@@ -71,11 +70,13 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Update a Course by the id in the request
+
+
+// Update a Student by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Course.update(req.body, {
+  Student.update(req.body, {
       where: {
         id: id
       }
@@ -83,26 +84,26 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Course was updated successfully."
+          message: "Student was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Course with id=${id}. Maybe Course was not found or req.body is empty!`
+          message: `Cannot update Student with id=${id}. Maybe Student was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Course with id=" + id
+        message: "Error updating Student with id=" + id
       });
     });
 };
 
-// Delete a Course with the specified id in the request
+// Delete a Student with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Course.destroy({
+  Student.destroy({
       where: {
         id: id
       }
@@ -110,35 +111,35 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Course was deleted successfully!"
+          message: "Student was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Course with id=${id}. Maybe Course was not found!`
+          message: `Cannot delete Student with id=${id}. Maybe Studnet was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Course with id=" + id
+        message: "Could not delete Studnet with id=" + id
       });
     });
 };
 
-// Delete all Courses from the database.
+// Delete all Student from the database.
 exports.deleteAll = (req, res) => {
-  Course.destroy({
+  Student.destroy({
       where: {},
       truncate: false
     })
     .then(nums => {
       res.send({
-        message: `${nums} Courses were deleted successfully!`
+        message: `${nums} Studnets were deleted successfully!`
       });
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while removing all courses."
+        message: err.message || "Some error occurred while removing all Students."
       });
     });
 };
