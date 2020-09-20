@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Course
 exports.create = (req, res) => {
-  if (!req.body.title) {
+  if (!req.body.idNumber) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
@@ -34,7 +34,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve  Student with idNumberfrom the database.
-exports.findIdNumber = (req, res) => {
+exports.findAll = (req, res) => {
   const idNumber = req.query.idNumber;
   var condition = idNumber ? {
     idNumber: {
