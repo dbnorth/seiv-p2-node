@@ -1,6 +1,6 @@
-const dbConfig = require("../config/db.config.js");
+const dbConfig = require('../config/db.config.js');
 
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
@@ -9,11 +9,11 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     max: dbConfig.pool.max,
     min: dbConfig.pool.min,
     acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle
+    idle: dbConfig.pool.idle,
   },
   define: {
-    timestamps: false
-  }
+    timestamps: false,
+  },
 });
 
 const db = {};
@@ -21,22 +21,29 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.course = require("./course.model.js")(sequelize, Sequelize);
-db.student = require("./student.model.js")(sequelize, Sequelize);
-db.degree = require("./degree.model.js")(sequelize, Sequelize);
-db.studentcourse = require("./degree.studentcourse.js")(sequelize, Sequelize);
+db.course = require('./course.model.js')(sequelize, Sequelize);
+db.student = require('./student.model.js')(sequelize, Sequelize);
+db.degree = require('./degree.model.js')(sequelize, Sequelize);
+db.semester = require('./semester.model.js')(sequelize, Sequelize);
+db.studentcourse = require('./studentcourse.model.js')(sequelize, Sequelize);
 db.course.hasMany(db.studentcourse, {
-  as: "studentcourse"
+  as: 'studentcourse'
 });
 db.studentcourse.belongsTo(db.course, {
-  foreignKey: "id",
-  as: "courseId",
+  foreignKey: 'courseId'
+
 });
 db.student.hasMany(db.studentcourse, {
-  as: "studentcourse"
+  as: 'studentcourse'
 });
 db.studentcourse.belongsTo(db.student, {
-  foreignKey: "id",
-  as: "studentId",
+  foreignKey: 'studentId'
+
+});
+db.semester.hasMany(db.studentcourse, {
+  as: 'studentcourse'
+});
+db.studentcourse.belongsTo(db.semester, {
+  foreignKey: 'semesterId'
 });
 module.exports = db;

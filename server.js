@@ -28,6 +28,8 @@ app.use(bodyParser.urlencoded({
 require("./routes/course.routes")(app);
 require("./routes/student.routes")(app);
 require("./routes/degree.routes")(app);
+require("./routes/semester.routes")(app);
+require("./routes/studentcourse.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
