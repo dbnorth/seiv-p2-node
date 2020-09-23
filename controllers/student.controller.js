@@ -2,7 +2,7 @@ const db = require("../models");
 const Student = db.student;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Course
+// Create and Save a new Student
 exports.create = (req, res) => {
   if (!req.body.idNumber) {
     res.status(400).send({
