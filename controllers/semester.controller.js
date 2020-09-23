@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Semester
 exports.create = (req, res) => {
-  if (!req.body.title) {
+  if (!req.body.code) {
     res.status(400).send({
       message: "Content can not be empty!"
     });

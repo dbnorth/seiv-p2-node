@@ -22,9 +22,6 @@ module.exports = (sequelize, Sequelize) => {
     },
     email: {
       type: Sequelize.STRING
-    },
-    major: {
-      type: Sequelize.STRING
     }
   }, {
     tableName: 'student'
