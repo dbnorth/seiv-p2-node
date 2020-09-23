@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Student = sequelize.define("student", {
+  const Degree = sequelize.define("degree", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -7,24 +7,17 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       autoIncrement: true
     },
-    idNumber: {
-      type: Sequelize.STRING,
-      unique: true,
-      allowNull: false
-    },
-    firstName: {
+    dept: {
       type: Sequelize.STRING,
       allowNull: false
     },
-    lastName: {
+    description: {
       type: Sequelize.STRING,
       allowNull: false
-    },
-    email: {
-      type: Sequelize.STRING
     }
+
   }, {
-    tableName: 'student'
+    tableName: 'degree'
   });
-  return Student;
+  return Degree;
 };
