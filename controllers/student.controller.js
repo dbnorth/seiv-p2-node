@@ -18,7 +18,7 @@ exports.create = (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
-    majorId: req.body.majorId
+    degreeId: req.body.degreeId
   };
 
   // Save Student in the database
