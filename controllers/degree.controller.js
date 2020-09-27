@@ -1,49 +1,45 @@
 const db = require("../models");
-const Course = db.course;
+const Degree = db.degree;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Course
+// Create and Save a new Degree
 exports.create = (req, res) => {
-  if (!req.body.title) {
+  if (!req.body.description) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
     return;
   }
 
-  // Create a Course
-  const course = {
+  // Create a Degree
+  const degree = {
     id: req.body.id,
     dept: req.body.dept,
-    number: req.body.number,
-    level: req.body.level,
-    hours: req.body.hours,
-    name: req.body.name,
     description: req.body.description
   };
 
-  // Save Course in the database
-  Course.create(course)
+  // Save Degree in the database
+  Degree.create(degree)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Course."
+        message: err.message || "Some error occurred while creating the Degree."
       });
     });
 };
 
-// Retrieve all Courses from the database.
+// Retrieve  Degree with idNumberfrom the database.
 exports.findAll = (req, res) => {
-  const dept = req.query.dept;
-  var condition = dept ? {
-    dept: {
-      [Op.like]: `%${dept}%`
+  const idNumber = req.query.idNumber;
+  var condition = idNumber ? {
+    idNumber: {
+      [Op.like]: `%${idNumber}%`
     }
   } : null;
 
-  Course.findAll({
+  Degree.findAll({
       where: condition
     })
     .then(data => {
@@ -56,26 +52,28 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Course with an id
+// Find a single Degree with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Course.findByPk(id)
+  Degree.findByPk(id)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: "Error retrieving Degree with id=" + id
       });
     });
 };
 
-// Update a Course by the id in the request
+
+
+// Update a Degree by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Course.update(req.body, {
+  Degree.update(req.body, {
       where: {
         id: id
       }
@@ -83,26 +81,26 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Course was updated successfully."
+          message: "Degree was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Course with id=${id}. Maybe Course was not found or req.body is empty!`
+          message: `Cannot update Degree with id=${id}. Maybe Degree was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Course with id=" + id
+        message: "Error updating Degree with id=" + id
       });
     });
 };
 
-// Delete a Course with the specified id in the request
+// Delete a Degree with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Course.destroy({
+  Degree.destroy({
       where: {
         id: id
       }
@@ -110,35 +108,35 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Course was deleted successfully!"
+          message: "Degree was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Course with id=${id}. Maybe Course was not found!`
+          message: `Cannot delete Degree with id=${id}. Maybe Studnet was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Course with id=" + id
+        message: "Could not delete Degree with id=" + id
       });
     });
 };
 
-// Delete all Courses from the database.
+// Delete all Degree from the database.
 exports.deleteAll = (req, res) => {
-  Course.destroy({
+  Degree.destroy({
       where: {},
       truncate: false
     })
     .then(nums => {
       res.send({
-        message: `${nums} Courses were deleted successfully!`
+        message: `${nums} Degree were deleted successfully!`
       });
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while removing all courses."
+        message: err.message || "Some error occurred while removing all Degrees."
       });
     });
 };

@@ -1,49 +1,45 @@
 const db = require("../models");
-const Course = db.course;
+const Semester = db.semester;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Course
+// Create and Save a new Semester
 exports.create = (req, res) => {
-  if (!req.body.title) {
+  if (!req.body.code) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
     return;
   }
 
-  // Create a Course
-  const course = {
+  // Create a Semester
+  const semester = {
     id: req.body.id,
-    dept: req.body.dept,
-    number: req.body.number,
-    level: req.body.level,
-    hours: req.body.hours,
-    name: req.body.name,
-    description: req.body.description
+    code: req.body.code,
+    startDate: req.body.startDate
   };
 
-  // Save Course in the database
-  Course.create(course)
+  // Save Semester in the database
+  Semester.create(semester)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Course."
+        message: err.message || "Some error occurred while creating the Semester."
       });
     });
 };
 
-// Retrieve all Courses from the database.
+// Retrieve all Semesters from the database.
 exports.findAll = (req, res) => {
-  const dept = req.query.dept;
-  var condition = dept ? {
+  const code = req.query.code;
+  var condition = code ? {
     dept: {
-      [Op.like]: `%${dept}%`
+      [Op.like]: `%${code}%`
     }
   } : null;
 
-  Course.findAll({
+  Semester.findAll({
       where: condition
     })
     .then(data => {
@@ -56,26 +52,26 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single Course with an id
+// Find a single Semester with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Course.findByPk(id)
+  Semester.findByPk(id)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: "Error retrieving Semester with id=" + id
       });
     });
 };
 
-// Update a Course by the id in the request
+// Update a Semester by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  Course.update(req.body, {
+  Semester.update(req.body, {
       where: {
         id: id
       }
@@ -83,26 +79,26 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Course was updated successfully."
+          message: "Semester was updated successfully."
         });
       } else {
         res.send({
-          message: `Cannot update Course with id=${id}. Maybe Course was not found or req.body is empty!`
+          message: `Cannot update Semester with id=${id}. Maybe Semester was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Course with id=" + id
+        message: "Error updating Semester with id=" + id
       });
     });
 };
 
-// Delete a Course with the specified id in the request
+// Delete a Semester with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  Course.destroy({
+  Semester.destroy({
       where: {
         id: id
       }
@@ -110,35 +106,35 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Course was deleted successfully!"
+          message: "Semester was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Course with id=${id}. Maybe Course was not found!`
+          message: `Cannot delete Semester with id=${id}. Maybe Semester was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Course with id=" + id
+        message: "Could not delete Semester with id=" + id
       });
     });
 };
 
-// Delete all Courses from the database.
+// Delete all Semesters from the database.
 exports.deleteAll = (req, res) => {
-  Course.destroy({
+  Semester.destroy({
       where: {},
       truncate: false
     })
     .then(nums => {
       res.send({
-        message: `${nums} Courses were deleted successfully!`
+        message: `${nums} Semesters were deleted successfully!`
       });
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while removing all courses."
+        message: err.message || "Some error occurred while removing all semesters."
       });
     });
 };
