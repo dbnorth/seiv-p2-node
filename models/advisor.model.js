@@ -1,16 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
-  const Student = sequelize.define("student", {
+  const Advisor = sequelize.define("advisor", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       unique: true,
       allowNull: false,
       autoIncrement: true
-    },
-    idNumber: {
-      type: Sequelize.STRING,
-      unique: true,
-      allowNull: false
     },
     firstName: {
       type: Sequelize.STRING,
@@ -23,11 +18,12 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     },
-    gradDate: {
-      type: Sequelize.DATE
+    dept: {
+      type: Sequelize.STRING
     }
+    
   }, {
-    tableName: 'student'
+    tableName: 'advisor'
   });
-  return Student;
+  return Advisor;
 };
