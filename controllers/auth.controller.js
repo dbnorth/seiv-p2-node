@@ -26,25 +26,18 @@ exports.login = async (req, res) => {
   let emailVerified = payload['email_verified'];
   let name = payload["name"];
   let pictureUrl = payload["picture"];
-
+  let advisors=[];
 // get User by email
 
-Advisor.findAll({
-  where: {
-    email : {[Op.eq] : email}
-  }
-})
+Advisor.findAll()
 .then(data => {
-  let advisors = data;
-})
-.catch(err => {
-  
-});
-
-let advisor = data[0];
+   advisors = data;
+   console.log("advisors :",data);
+   let advisor = data[0].dataValues;
+    console.log("advisor :",advisor);
 // Create a Session
   const session = {
-    token: req.body.token,
+    token: req.body.accessToken,
     email: advisor.email,
     advisorId : advisor.id,
     studentId : null,
@@ -54,13 +47,23 @@ let advisor = data[0];
   // Save Session in the database
   Session.create(session)
     .then(data => {
-      res.send(data);
+      var userInfo = {
+        user : advisor.firstName,
+        token : session.token
+      };
+      res.send(userInfo);
     })
     .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while creating the Session."
       });
     });
+})
+.catch(err => {
+  console.log(err.message);
+});
+
+
 };
 
 exports.logout = async (req, res) => {
