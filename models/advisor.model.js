@@ -20,6 +20,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     dept: {
       type: Sequelize.STRING
+    },
+    roles: {
+      type: Sequelize.STRING
     }
     
   }, {
