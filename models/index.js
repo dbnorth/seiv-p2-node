@@ -26,6 +26,8 @@ db.student = require('./student.model.js')(sequelize, Sequelize);
 db.degree = require('./degree.model.js')(sequelize, Sequelize);
 db.semester = require('./semester.model.js')(sequelize, Sequelize);
 db.studentcourse = require('./studentcourse.model.js')(sequelize, Sequelize);
+db.advisor = require('./advisor.model.js')(sequelize, Sequelize);
+db.session = require('./session.model.js')(sequelize, Sequelize);
 
 db.course.hasMany(db.studentcourse, {
   as: 'studentcourse'
@@ -54,4 +56,25 @@ db.degree.hasMany(db.student, {
 db.student.belongsTo(db.degree, {
   foreignKey: 'degreeId'
 });
+db.advisor.hasMany(db.student, {
+  as: 'student'
+});
+db.student.belongsTo(db.advisor, {
+  foreignKey: 'advisorId'
+});
+
+db.advisor.hasMany(db.session, {
+  as: 'session'
+});
+db.session.belongsTo(db.advisor, {
+  foreignKey: 'advisorId'
+});
+
+db.student.hasMany(db.session, {
+  as: 'session'
+});
+db.session.belongsTo(db.student, {
+  foreignKey: 'studentId'
+});
+
 module.exports = db;
