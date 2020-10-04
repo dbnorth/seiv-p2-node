@@ -32,19 +32,29 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve  Advisor with idNumberfrom the database.
-exports.findAll = (req, res) => {
 
-  Advisor.findAll()
+// Retrieve all Advisors from the database.
+exports.findAll = (req, res) => {
+  const email = req.query.email;
+  var condition = email ? {
+    email: {
+      [Op.like]: `%${email}%`
+    }
+  } : null;
+
+  Advisor.findAll({
+      where: condition
+    })
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving Advisor."
+        message: err.message || "Some error occurred while retrieving advisor."
       });
     });
 };
+
 
 // Find a single Advisor with an id
 exports.findOne = (req, res) => {
