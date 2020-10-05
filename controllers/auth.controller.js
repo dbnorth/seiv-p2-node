@@ -2,6 +2,9 @@ const db = require("../models");
 const Session = db.session;
 const Advisor = db.advisor;
 const Op = db.Sequelize.Op;
+const authcofig = require('../config/auth.config.js');
+
+var jwt = require("jsonwebtoken");
 
 // Login and create Session
 exports.login = async (req, res) => {
@@ -29,19 +32,25 @@ exports.login = async (req, res) => {
   let advisors=[];
 // get User by email
 
-Advisor.findAll()
+Advisor.findOne({
+  where : {email:email}
+}
+)
 .then(data => {
-   advisors = data;
-   console.log("advisors :",data);
-   let advisor = data[0].dataValues;
-    console.log("advisor :",advisor);
+
+   let advisor = data.dataValues;
+   console.log("advisor:",advisor);
+   var token = jwt.sign({ id: advisor.email }, authcofig.secret, {expiresIn: 86400} // 24 hours
+  
+  );
+  console.log(token);
 // Create a Session
   const session = {
-    token: req.body.accessToken,
+    token: token,
     email: advisor.email,
     advisorId : advisor.id,
     studentId : null,
-    expireDate: new Date()
+    expireDate: new Date()+1
   };
 
   // Save Session in the database
