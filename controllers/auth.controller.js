@@ -1,6 +1,7 @@
 const db = require("../models");
 const Session = db.session;
 const Advisor = db.advisor;
+const Student = db.student;
 const Op = db.Sequelize.Op;
 const authcofig = require('../config/auth.config.js');
 
@@ -14,7 +15,7 @@ exports.login = async (req, res) => {
     });
     return;
   }
- console.log(req.body.email);
+
 // get Google Info
   const {OAuth2Client} = require('google-auth-library');
   const client = new OAuth2Client('344429607870-mmsdb296ne3vcb7popn96mclv3jnhigv.apps.googleusercontent.com');
@@ -29,35 +30,72 @@ exports.login = async (req, res) => {
   let emailVerified = payload['email_verified'];
   let name = payload["name"];
   let pictureUrl = payload["picture"];
-  let advisors=[];
+
+  let user = {};
+  let token = null;
+
+
 // get User by email
 
-Advisor.findOne({
+await Advisor.findOne({
   where : {email:email}
 }
 )
 .then(data => {
-
-   let advisor = data.dataValues;
-   console.log("advisor:",advisor);
-   var token = jwt.sign({ id: advisor.email }, authcofig.secret, {expiresIn: 86400} // 24 hours
+  if (data != null) {
+    let advisor= data.dataValues;
+    token = jwt.sign({ id: advisor.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
+    user.email = advisor.email;
+    user.advisorId = advisor.id;
+    user.studentId = null;
+    user.firstName = advisor.firstName;
+    user.roles = advisor.roles;
   
-  );
-  console.log(token);
+  }
+  })
+  .catch(err => {
+    console.log(err.message);
+  });
+  data = null;
+  await Student.findOne({
+    where : {email:email}
+  }
+  )
+  .then(data => {
+    if (data != null) {
+      console.log("data",data);
+        let student = data.dataValues;
+        token = jwt.sign({ id: student.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
+        user.email = student.email;
+        user.advisorId = null;
+        user.studentId = student.studentId;
+        user.firstName = student.firstName;
+        user.roles = student.roles;
+     }
+    
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+
 // Create a Session
+  const tokenExpireDate =new Date()+(24 * 60 * 60 * 1000);
   const session = {
     token: token,
-    email: advisor.email,
-    advisorId : advisor.id,
-    studentId : null,
-    expireDate: new Date()+1
+    email: user.email,
+    advisorId : user.advisorId,
+    studentId : user.studentId,
+    expireDate: tokenExpireDate
   };
 
   // Save Session in the database
   Session.create(session)
     .then(data => {
       var userInfo = {
-        user : advisor.firstName,
+        user : user.firstName,
+        studentId : user.studentId,
+        advisorId: user.advisorId,
+        roles : user.roles,
         token : session.token
       };
       res.send(userInfo);
@@ -66,16 +104,9 @@ Advisor.findOne({
       res.status(500).send({
         message: err.message || "Some error occurred while creating the Session."
       });
-    });
-})
-.catch(err => {
-  console.log(err.message);
-});
-
-
-};
+    })
+  }
 
 exports.logout = async (req, res) => {
-
     return;
-  }
+};
