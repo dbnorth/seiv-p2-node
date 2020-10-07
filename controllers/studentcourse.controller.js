@@ -12,7 +12,7 @@ exports.create = (req, res) => {
   }
 
   // Create a StudentCourse
-  const student = {
+  const studentCourse = {
     id: req.body.id,
     studentId: req.body.studentId,
     courseId: req.body.courseId,
@@ -42,6 +42,7 @@ exports.findAll = (req, res) => {
   } : null;
 
   StudentCourse.findAll({
+    include: ["semester","course"],
       where: condition
     })
     .then(data => {
@@ -64,7 +65,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Tutorial with id=" + id
+        message: "Error retrieving StudentCourse with id=" + id
       });
     });
 };
