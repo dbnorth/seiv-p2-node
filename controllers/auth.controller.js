@@ -62,13 +62,14 @@ await Advisor.findOne({
   }
   )
   .then(data => {
+
     if (data != null) {
-      console.log("data",data);
+      
         let student = data.dataValues;
         token = jwt.sign({ id: student.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
         user.email = student.email;
         user.advisorId = null;
-        user.studentId = student.studentId;
+        user.studentId = student.id;
         user.firstName = student.firstName;
         user.roles = student.roles;
      }
