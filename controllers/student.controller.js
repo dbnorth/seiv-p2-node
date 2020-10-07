@@ -18,7 +18,10 @@ exports.create = (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
-    degreeId: req.body.degreeId
+    degreeId: req.body.degreeId,
+    advisorId: req.body.advisorId,
+    gradDate :req.body.gradDate,
+    roles: req.body.roles
   };
 
   // Save Student in the database
@@ -50,7 +53,7 @@ exports.findAll = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving Students."
+        message: err.message || "Some error occurred while retrieving Student."
       });
     });
 };

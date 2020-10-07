@@ -25,6 +25,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     gradDate: {
       type: Sequelize.DATE
+    },
+    roles: {
+      type: Sequelize.STRING
     }
   }, {
     tableName: 'student'
