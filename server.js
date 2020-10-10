@@ -15,6 +15,7 @@ const db = require("./models");
 db.sequelize.sync();
 
 
+
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 

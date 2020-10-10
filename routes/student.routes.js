@@ -11,7 +11,7 @@ module.exports = app => {
   router.get("/", [authenticate,isAdminOrAdvisor],Students.findAll);
 
   // Retrieve a single Student with id
-  router.get("/:id", [authenticate,isAdminOrAdvisor],Students.findOne);
+  router.get("/:id", [authenticate,isAny],Students.findOne);
 
   // Update a Student with id
   router.put("/:id", [authenticate,isAny],Students.update);

@@ -1,14 +1,14 @@
 
 module.exports = app => {
   const Semesters = require("../controllers/semester.controller.js");
-  const { authenticate,isAdmin } = require("../util/util.js");
+  const { authenticate,isAdmin,isAny } = require("../util/util.js");
   var router = require("express").Router();
 
   // Create a new Semester
   router.post("/", [authenticate,isAdmin],Semesters.create);
 
   // Retrieve all Semesters
-  router.get("/",[authenticate,isAdmin], Semesters.findAll);
+  router.get("/",[authenticate,isAny], Semesters.findAll);
 
   // Retrieve a single Semester with id
   router.get("/:id",[authenticate,isAdmin], Semesters.findOne);

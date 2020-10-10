@@ -126,7 +126,7 @@ isAdmin = (req, res, next) => {
                 } 
                 else
                 res.status(403).send({
-                  message: "Require Admin Role!"});
+                  message: "Require Admin or Advisor Role!"});
             })
             .catch(error => {
               return res.status(401).send({
@@ -172,7 +172,7 @@ isAny = (req, res, next) => {
                   } 
                   else
                   res.status(403).send({
-                    message: "Require Admin Role!"});
+                    message: "Require Any Role!"});
               })
               .catch(error => {
                 return res.status(401).send({

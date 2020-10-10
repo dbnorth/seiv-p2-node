@@ -1,7 +1,7 @@
 
 module.exports = app => {
   const Advisors = require("../controllers/advisor.controller.js");
-  const { authenticate,isAdmin,isAdvisorOrAdmin } = require("../util/util.js");
+  const { authenticate,isAdmin,isAdvisorOrAdmin,isAny } = require("../util/util.js");
 
   var router = require("express").Router();
 
@@ -9,10 +9,10 @@ module.exports = app => {
   router.post("/", [authenticate,isAdmin],Advisors.create);
 
   // Retrieve all Advisors
-  router.get("/", [authenticate,isAdmin],Advisors.findAll);
+  router.get("/", [authenticate,isAny],Advisors.findAll);
 
   // Retrieve a single Advisor with id
-  router.get("/:id", [authenticate,isAdmin],Advisors.findOne);
+  router.get("/:id", [authenticate,isAdminOrAdvisor],Advisors.findOne);
 
   // Update a Advisor with id
   router.put("/:id", [authenticate,isAdminOrAdvisor],Advisors.update);

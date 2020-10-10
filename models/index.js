@@ -12,7 +12,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     idle: dbConfig.pool.idle,
   },
   define: {
-    timestamps: false,
+    timestamps: true,
   },
 });
 
@@ -76,5 +76,6 @@ db.student.hasMany(db.session, {
 db.session.belongsTo(db.student, {
   foreignKey: 'studentId'
 });
+
 
 module.exports = db;
