@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false
     },
     startDate: {
-      type: Sequelize.DATE,
+      type: Sequelize.DATEONLY,
       allowNull: false
     }
 

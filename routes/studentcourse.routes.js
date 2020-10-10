@@ -1,25 +1,26 @@
 module.exports = app => {
   const StudentCourses = require("../controllers/studentcourse.controller.js");
-
+  const { authenticate,isAny } = require("../util/util.js");
+  
   var router = require("express").Router();
 
   // Create a new StudentCourse
-  router.post("/", StudentCourses.create);
+  router.post("/",[authenticate,isAny], StudentCourses.create);
 
   // Retrieve all StudentCourses
-  router.get("/", StudentCourses.findAll);
+  router.get("/", [authenticate,isAny],StudentCourses.findAll);
 
   // Retrieve a single StudentCourse with id
-  router.get("/:id", StudentCourses.findOne);
+  router.get("/:id",[authenticate,isAny], StudentCourses.findOne);
 
   // Update a StudentCourse with id
-  router.put("/:id", StudentCourses.update);
+  router.put("/:id",[authenticate,isAny], StudentCourses.update);
 
   // Delete a StudentCourse with id
-  router.delete("/:id", StudentCourses.delete);
+  router.delete("/:id",[authenticate,isAny], StudentCourses.delete);
 
   // Delete all StudentCourses
-  router.delete("/", StudentCourses.deleteAll);
+  router.delete("/", [authenticate,isAny],StudentCourses.deleteAll);
 
   app.use('/api/studentcourses', router);
 };

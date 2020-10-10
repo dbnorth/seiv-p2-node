@@ -1,45 +1,196 @@
 const db = require("../models");
 const Session = db.session;
+const Advisor = db.advisor;
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 
-export async function authenticate(req, db) {
-  let auth = req.get("authorization");
-  if (auth != null) {
-    if (auth.startsWith("Bearer ")) 
+
+authenticate = (req,res,next) => {
+  console.log("authenticate");
+  let authHeader = req.get("authorization");
+  if (authHeader != null) {
+    if (authHeader.startsWith("Bearer ")) 
     {
-      let token = auth.slice(7);
+      let token = authHeader.slice(7);
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
           return res.status(401).send({
-            message: "Unauthorized!"
+            message: "Unauthorized! Invalid Token"
           });
         }
-        req.userId = decoded.id;
+       // req.userId = decoded.id;
       });
-      await Session.findOne({
+      Session.findOne({
         where : {token:token}
       }
       )
       .then(data => {
-        let session = data.dataValue;
-        if (session.length > 0)
-          if (session.expDate > Date.now())
-
-            return true;
+        let session = data.dataValues;
+        if (session != null) {
+          if (session.expireDate >= Date.now()){
+            next();
+            return;
+          }
          else
-            return false;
-        })
-        .catch(err => {
-          console.log(err.message);
-        });
-
+            return res.status(401).send({
+              message: "Unauthorized! Expired Token"
+              });
+        }
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+    }
   }
-  if (require) {
-    throw new AuthError(req, {
-      status: 401,
-      code: "auth-required",
-      message: "Authentication required"
+  else {
+    return res.status(401).send({
+      message: "Unauthorized! No Auth Header"
     });
   }
-}
+};
+
+isAdmin = (req, res, next) => {
+  console.log("isAdmin");
+  let authHeader = req.get("authorization");
+  let token="";
+  
+  if (authHeader != null) {
+    if (authHeader.startsWith("Bearer ")) 
+    {
+      token = authHeader.slice(7);
+    }
+    else 
+      return res.status(401).send({
+        message: "Unauthorized! missing Bearer"
+        });
+  }
+  Session.findOne({
+    where : {token:token}
+  })
+  .then(data => {
+    let session = data.dataValues;
+    if (session.advisorId != null) {
+      Advisor.findByPk(session.advisorId)
+        .then(data => {
+            roles = data.dataValues.roles;
+            if (roles=="Admin") {
+              next();
+            
+              return;
+            } 
+            else
+            res.status(403).send({
+              message: "Require Admin Role!"});
+        })
+        .catch(error => {
+          return res.status(401).send({
+            message: "Unauthorized! bad Token"
+            });
+        });
+      }
+     else
+        return res.status(401).send({
+          message: "Unauthorized! bad Token"
+          });
+    });
+  };
+
+  isAdminOrAdvisor = (req, res, next) => {
+      console.log("isAdminOrAdvisor");
+      let authHeader = req.get("authorization");
+      let token="";
+      
+      if (authHeader != null) {
+        if (authHeader.startsWith("Bearer ")) 
+        {
+          token = authHeader.slice(7);
+        }
+        else 
+          return res.status(401).send({
+            message: "Unauthorized! missing Bearer"
+            });
+      }
+      Session.findOne({
+        where : {token:token}
+      })
+      .then(data => {
+        let session = data.dataValues;
+        if (session.advisorId != null) {
+          Advisor.findByPk(session.advisorId)
+            .then(data => {
+                roles = data.dataValues.roles;
+                if (roles=="Admin" || roles=="Advisor") {
+                  next();
+                
+                  return;
+                } 
+                else
+                res.status(403).send({
+                  message: "Require Admin or Advisor Role!"});
+            })
+            .catch(error => {
+              return res.status(401).send({
+                message: "Unauthorized! bad Token"
+                });
+            });
+          }
+         else
+            return res.status(401).send({
+              message: "Unauthorized! bad Token"
+              });
+        });
+      };
+
+isAny = (req, res, next) => {
+        console.log("isAny");
+        let authHeader = req.get("authorization");
+        let token="";
+        
+        if (authHeader != null) {
+          if (authHeader.startsWith("Bearer ")) 
+          {
+            token = authHeader.slice(7);
+          }
+          else 
+            return res.status(401).send({
+              message: "Unauthorized! missing Bearer"
+              });
+        }
+        Session.findOne({
+          where : {token:token}
+        })
+        .then(data => {
+          let session = data.dataValues;
+          if (session.advisorId != null) {
+            Advisor.findByPk(session.advisorId)
+              .then(data => {
+                  roles = data.dataValues.roles;
+                  if (roles=="Admin" || roles=="Advisor" || roles=="Student") {
+                    next();
+                  
+                    return;
+                  } 
+                  else
+                  res.status(403).send({
+                    message: "Require Any Role!"});
+              })
+              .catch(error => {
+                return res.status(401).send({
+                  message: "Unauthorized! bad Token"
+                  });
+              });
+            }
+           else
+              return res.status(401).send({
+                message: "Unauthorized! bad Token"
+                });
+          });
+        };
+const auth = {
+  authenticate: authenticate,
+  isAdmin: isAdmin,
+  isAdminOrAdvisor : isAdminOrAdvisor,
+  isAny : isAny
+
+};
+module.exports = auth;
