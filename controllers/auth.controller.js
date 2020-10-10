@@ -5,6 +5,7 @@ const Student = db.student;
 const Op = db.Sequelize.Op;
 const authcofig = require('../config/auth.config.js');
 
+
 var jwt = require("jsonwebtoken");
 
 // Login and create Session
@@ -80,7 +81,8 @@ await Advisor.findOne({
     });
 
 // Create a Session
-  const tokenExpireDate =new Date()+(24 * 60 * 60 * 1000);
+  let tokenExpireDate =new Date();
+  tokenExpireDate.setDate(tokenExpireDate.getDate() + 1);
   const session = {
     token: token,
     email: user.email,
