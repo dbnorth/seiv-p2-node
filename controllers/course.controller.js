@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Course
 exports.create = (req, res) => {
-  if (!req.body.title) {
+  if (!req.body.number) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
@@ -19,7 +19,8 @@ exports.create = (req, res) => {
     level: req.body.level,
     hours: req.body.hours,
     name: req.body.name,
-    description: req.body.description
+    description: req.body.description,
+    semesterOffered: req.body.semesterOffered
   };
 
   // Save Course in the database
@@ -51,7 +52,7 @@ exports.findAll = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving tutorials."
+        message: err.message || "Some error occurred while retrieving course."
       });
     });
 };

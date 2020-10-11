@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     }
 
   }, {
-    tableName: 'degreecourse'
+    tableName: 'degree-course'
   });
   return DegreeCourse;
 };

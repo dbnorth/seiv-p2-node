@@ -26,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     description: {
       type: Sequelize.STRING
+    },
+    semestersOffered: {
+      type: Sequelize.STRING
     }
   }, {
     tableName: 'course'
