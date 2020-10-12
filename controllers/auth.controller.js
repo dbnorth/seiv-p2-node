@@ -38,8 +38,8 @@ exports.login = async (req, res) => {
   let token = null;
 
 // get User by email
-console.log("search Advisor");
- let  foundUser = false;
+  console.log("search Advisor");
+  let  foundUser = false;
   await Advisor.findOne({
     where : {email:email}
   })
@@ -55,9 +55,15 @@ console.log("search Advisor");
       foundUser = true;
 
     }
-    else {
+    }).catch(err => {
+        console.log("Error 1");
+        res.status(401).send({
+          message: err.message || "Error looking up User"
+        });
+        return;
+    });
       console.log("student search");
-      Student.findOne({
+      await Student.findOne({
         where : {email:email}
       }
       )
@@ -72,11 +78,7 @@ console.log("search Advisor");
             user.roles = student.roles;
             foundUser = true;
          }
-         else {
-           console.log("no User found");
-           foundUser = false;
 
-        }
       }).catch(err => {
         console.log("Error 1");
         res.status(401).send({
@@ -84,23 +86,13 @@ console.log("search Advisor");
        });
         return;
     });
-    }
-  })
-    .catch(err => {
-      console.log("Error 2");
+    console.log()
+    if (!foundUser) {
       res.status(401).send({
-        message: err.message || "Error looking up User"
+        message: "User Not Found"
       });
-    return;
-
-});
-console.log()
-if (!foundUser) {
-  res.status(401).send({
-    message: "User Not Found"
-  });
-  return;
-}
+      return;
+    }
 // Create a Session
   let tokenExpireDate =new Date();
   tokenExpireDate.setDate(tokenExpireDate.getDate() + 1);
