@@ -5,11 +5,14 @@ const Student = db.student;
 const Op = db.Sequelize.Op;
 const authcofig = require('../config/auth.config.js');
 
+
 var jwt = require("jsonwebtoken");
 
 // Login and create Session
 exports.login = async (req, res) => {
+
   if (!req.body.accessToken) {
+    console.log("accessToken");
     res.status(400).send({
       message: "Content can not be empty!"
     });
@@ -34,53 +37,73 @@ exports.login = async (req, res) => {
   let user = {};
   let token = null;
 
-
 // get User by email
-
-await Advisor.findOne({
-  where : {email:email}
-}
-)
-.then(data => {
-  if (data != null) {
-    let advisor= data.dataValues;
-    token = jwt.sign({ id: advisor.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
-    user.email = advisor.email;
-    user.advisorId = advisor.id;
-    user.studentId = null;
-    user.firstName = advisor.firstName;
-    user.roles = advisor.roles;
-  
-  }
-  })
-  .catch(err => {
-    console.log(err.message);
-  });
-  data = null;
-  await Student.findOne({
+console.log("search Advisor");
+ let  foundUser = false;
+  await Advisor.findOne({
     where : {email:email}
-  }
-  )
+  })
   .then(data => {
-
     if (data != null) {
-      
-        let student = data.dataValues;
-        token = jwt.sign({ id: student.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
-        user.email = student.email;
-        user.advisorId = null;
-        user.studentId = student.id;
-        user.firstName = student.firstName;
-        user.roles = student.roles;
-     }
-    
-    })
-    .catch(err => {
-      console.log(err.message);
-    });
+      let advisor= data.dataValues;
+      token = jwt.sign({ id: advisor.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
+      user.email = advisor.email;
+      user.advisorId = advisor.id;
+      user.studentId = null;
+      user.firstName = advisor.firstName;
+      user.roles = advisor.roles;
+      foundUser = true;
 
+    }
+    else {
+      console.log("student search");
+      Student.findOne({
+        where : {email:email}
+      }
+      )
+      .then(data => {
+        if (data != null) {         
+            let student = data.dataValues;
+            token = jwt.sign({ id: student.email }, authcofig.secret, {expiresIn: 86400}); // 24 hours
+            user.email = student.email;
+            user.advisorId = null;
+            user.studentId = student.id;
+            user.firstName = student.firstName;
+            user.roles = student.roles;
+            foundUser = true;
+         }
+         else {
+           console.log("no User found");
+           foundUser = false;
+
+        }
+      }).catch(err => {
+        console.log("Error 1");
+        res.status(401).send({
+          message: err.message || "Error looking up User"
+       });
+        return;
+    });
+    }
+  })
+    .catch(err => {
+      console.log("Error 2");
+      res.status(401).send({
+        message: err.message || "Error looking up User"
+      });
+    return;
+
+});
+console.log()
+if (!foundUser) {
+  res.status(401).send({
+    message: "User Not Found"
+  });
+  return;
+}
 // Create a Session
-  const tokenExpireDate =new Date()+(24 * 60 * 60 * 1000);
+  let tokenExpireDate =new Date();
+  tokenExpireDate.setDate(tokenExpireDate.getDate() + 1);
   const session = {
     token: token,
     email: user.email,
@@ -105,7 +128,7 @@ await Advisor.findOne({
       res.status(500).send({
         message: err.message || "Some error occurred while creating the Session."
       });
-    })
+    });
   }
 
 exports.logout = async (req, res) => {

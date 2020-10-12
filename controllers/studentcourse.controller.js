@@ -65,7 +65,8 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving studentCourse with id=" + id
+        message: "Error retrieving StudentCourse with id=" + id
+
       });
     });
 };

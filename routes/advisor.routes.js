@@ -1,25 +1,27 @@
+
 module.exports = app => {
   const Advisors = require("../controllers/advisor.controller.js");
+  const { authenticate,isAdmin,isAdvisorOrAdmin,isAny } = require("../util/util.js");
 
   var router = require("express").Router();
 
   // Create a new Advisor
-  router.post("/", Advisors.create);
+  router.post("/", [authenticate,isAdmin],Advisors.create);
 
   // Retrieve all Advisors
-  router.get("/", Advisors.findAll);
+  router.get("/", [authenticate,isAny],Advisors.findAll);
 
   // Retrieve a single Advisor with id
-  router.get("/:id", Advisors.findOne);
+  router.get("/:id", [authenticate,isAdminOrAdvisor],Advisors.findOne);
 
   // Update a Advisor with id
-  router.put("/:id", Advisors.update);
+  router.put("/:id", [authenticate,isAdminOrAdvisor],Advisors.update);
 
   // Delete a Advisor with id
-  router.delete("/:id", Advisors.delete);
+  router.delete("/:id", [authenticate,isAdmin],Advisors.delete);
 
   // Delete all Advisors
-  router.delete("/", Advisors.deleteAll);
+  router.delete("/", [authenticate,isAdmin],Advisors.deleteAll);
 
   app.use('/api/advisors', router);
 };
