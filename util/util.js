@@ -17,7 +17,7 @@ authenticate = (req,res,next) => {
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
           return res.status(401).send({
-            message: "Unauthorized! Invalid Token"
+            message: "Unauthorized! Expired Token, Login again"
           });
         }
        // req.userId = decoded.id;
@@ -35,7 +35,7 @@ authenticate = (req,res,next) => {
           }
          else
             return res.status(401).send({
-              message: "Unauthorized! Expired Token"
+              message: "Unauthorized! Expired Token, Login again"
               });
         }
       })
