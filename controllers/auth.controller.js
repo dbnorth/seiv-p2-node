@@ -40,6 +40,7 @@ exports.login = async (req, res) => {
 // get User by email
   console.log("search Advisor");
   let  foundUser = false;
+  // is there an Advisor with email
   await Advisor.findOne({
     where : {email:email}
   })
@@ -53,7 +54,6 @@ exports.login = async (req, res) => {
       user.firstName = advisor.firstName;
       user.roles = advisor.roles;
       foundUser = true;
-
     }
     }).catch(err => {
         console.log("Error 1");
@@ -62,6 +62,7 @@ exports.login = async (req, res) => {
         });
         return;
     });
+    // is there an Student with email
       console.log("student search");
       await Student.findOne({
         where : {email:email}
@@ -86,7 +87,7 @@ exports.login = async (req, res) => {
        });
         return;
     });
-    console.log()
+    // did we find a user
     if (!foundUser) {
       res.status(401).send({
         message: "User Not Found"
