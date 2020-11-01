@@ -7,6 +7,7 @@ const authcofig = require('../config/auth.config.js');
 
 
 var jwt = require("jsonwebtoken");
+const { advisor } = require("../models");
 
 // Login and create Session
 exports.login = async (req, res) => {
@@ -50,6 +51,7 @@ console.log("search Advisor");
       user.email = advisor.email;
       user.advisorId = advisor.id;
       user.studentId = null;
+      user.userId = advisor.id;
       user.firstName = advisor.firstName;
       user.roles = advisor.roles;
       foundUser = true;
@@ -68,6 +70,7 @@ console.log("search Advisor");
             user.email = student.email;
             user.advisorId = null;
             user.studentId = student.id;
+            user.userId  = student.id;
             user.firstName = student.firstName;
             user.roles = student.roles;
             foundUser = true;
@@ -115,13 +118,15 @@ if (!foundUser) {
   // Save Session in the database
   Session.create(session)
     .then(data => {
-      var userInfo = {
+      let userInfo = {
         user : user.firstName,
         studentId : user.studentId,
         advisorId: user.advisorId,
+        userId : user.userId,
         roles : user.roles,
         token : session.token
       };
+
       res.send(userInfo);
     })
     .catch(err => {
