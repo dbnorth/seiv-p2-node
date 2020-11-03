@@ -15,7 +15,8 @@ exports.create = (req, res) => {
   const degree = {
     id: req.body.id,
     dept: req.body.dept,
-    description: req.body.description
+    description: req.body.description,
+    hours : req.body.hours
   };
 
   // Save Degree in the database

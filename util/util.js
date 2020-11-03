@@ -1,6 +1,8 @@
 const db = require("../models");
 const Session = db.session;
 const Advisor = db.advisor;
+const Student = db.student;
+
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 
@@ -15,7 +17,7 @@ authenticate = (req,res,next) => {
       jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
           return res.status(401).send({
-            message: "Unauthorized! Invalid Token"
+            message: "Unauthorized! Expired Token, Login again"
           });
         }
        // req.userId = decoded.id;
@@ -33,7 +35,7 @@ authenticate = (req,res,next) => {
           }
          else
             return res.status(401).send({
-              message: "Unauthorized! Expired Token"
+              message: "Unauthorized! Expired Token, Login again"
               });
         }
       })
@@ -70,7 +72,7 @@ isAdmin = (req, res, next) => {
   .then(data => {
     let session = data.dataValues;
     if (session.advisorId != null) {
-      Advisor.findByPk(session.advisorId)
+     Advisor.findByPk(session.advisorId)
         .then(data => {
             roles = data.dataValues.roles;
             if (roles=="Admin") {
@@ -80,18 +82,23 @@ isAdmin = (req, res, next) => {
             } 
             else
             res.status(403).send({
-              message: "Require Admin Role!"});
+              message: "Requires Adviosor Role"});
         })
         .catch(error => {
           return res.status(401).send({
-            message: "Unauthorized! bad Token"
+            message: "Error finding Advisor"
             });
         });
       }
      else
-        return res.status(401).send({
-          message: "Unauthorized! bad Token"
+        return res.status(403).send({
+          message: "Requires Advior role"
           });
+    })        
+    .catch(error => {
+      return res.status(401).send({
+        message: "Error finding Session"
+        });
     });
   };
 
@@ -126,22 +133,28 @@ isAdmin = (req, res, next) => {
                 } 
                 else
                 res.status(403).send({
-                  message: "Require Admin or Advisor Role!"});
+                  message: "Require Admin or Advisor Role"});
             })
             .catch(error => {
               return res.status(401).send({
-                message: "Unauthorized! bad Token"
+                message: "Error finding Advisor"
                 });
             });
           }
          else
-            return res.status(401).send({
-              message: "Unauthorized! bad Token"
+            return res.status(403).send({
+              message: "Require Admin or Advisor Role"
               });
-        });
-      };
+        })            
+        .catch(error => {
+          return res.status(401).send({
+            message: "Error finding Session"
+            });
+      });
+    
+    };
 
-isAny = (req, res, next) => {
+  isAny = (req, res, next) => {
         console.log("isAny");
         let authHeader = req.get("authorization");
         let token="";
@@ -167,7 +180,6 @@ isAny = (req, res, next) => {
                   roles = data.dataValues.roles;
                   if (roles=="Admin" || roles=="Advisor") {
                     next();
-                  
                     return;
                   } 
                   else
@@ -179,7 +191,7 @@ isAny = (req, res, next) => {
                   message: "Unauthorized! bad Token"
                   });
               });
-            }
+           }
            else
            {
             if (session.studnetId != null) {
@@ -204,10 +216,12 @@ isAny = (req, res, next) => {
                 res.status(403).send({
                   message: "No User in Session!"});
               }
-           }
-
+            }
+          ).catch(error => {
+                  return res.status(401).send({
+                    message: "Unauthorized! bad Token"
           });
-        };
+ };
 
 const auth = {
   authenticate: authenticate,
