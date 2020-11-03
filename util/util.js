@@ -191,28 +191,37 @@ isAdmin = (req, res, next) => {
                   message: "Unauthorized! bad Token"
                   });
               });
-            }
+           }
            else
            {
-           Student.findByPk(session.studentId)
-           .then(data => {
-               roles = data.dataValues.roles;
-               if (roles=="Student") {
-                 next();
-                 return;
-               } 
-               else
-               res.status(403).send({
-                 message: "Requires Any Role!"});
-           })
-           .catch(error => {
-             return res.status(401).send({
-               message: "Unauthorized! bad Token"
-               });
+            if (session.studnetId != null) {
+              Student.findByPk(session.studentId)
+                .then(data => {
+                    roles = data.dataValues.roles;
+                    if (roles=="Student") {
+                      next();
+                      return;
+                    } 
+                    else
+                    res.status(403).send({
+                      message: "Requires Any Role!"});
+                })
+                .catch(error => {
+                  return res.status(401).send({
+                    message: "Unauthorized! bad Token"
+                    });
+                });
+              }
+              else{
+                res.status(403).send({
+                  message: "No User in Session!"});
+              }
+            }
+          ).catch(error => {
+                  return res.status(401).send({
+                    message: "Unauthorized! bad Token"
           });
-        }
-      });
-    };
+ };
 
 const auth = {
   authenticate: authenticate,
