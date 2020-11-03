@@ -216,12 +216,16 @@ isAdmin = (req, res, next) => {
                 res.status(403).send({
                   message: "No User in Session!"});
               }
-            }
-          ).catch(error => {
-                  return res.status(401).send({
-                    message: "Unauthorized! bad Token"
-          });
- };
+            };
+          }
+          )
+          .catch(error => {
+            return res.status(401).send({
+              message: "Unauthorized! bad Token"
+            });
+          })
+        };
+ 
 
 const auth = {
   authenticate: authenticate,
