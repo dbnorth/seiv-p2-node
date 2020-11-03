@@ -29,6 +29,7 @@ module.exports = (sequelize, Sequelize) => {
     roles: {
       type: Sequelize.STRING
     }
+
   }, {
     tableName: 'student'
   });
