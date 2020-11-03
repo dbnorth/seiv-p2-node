@@ -15,8 +15,16 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       allowNull: false
     },
-    
-  }, {
+    advisorId: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
+    studentId: {
+      type: Sequelize.STRING,
+      allowNull: true
+    }, 
+  }, 
+  {
     tableName: 'session'
   });
   return Session;

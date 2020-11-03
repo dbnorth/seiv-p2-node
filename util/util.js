@@ -165,14 +165,14 @@ isAny = (req, res, next) => {
             Advisor.findByPk(session.advisorId)
               .then(data => {
                   roles = data.dataValues.roles;
-                  if (roles=="Admin" || roles=="Advisor" || roles=="Student") {
+                  if (roles=="Admin" || roles=="Advisor") {
                     next();
                   
                     return;
                   } 
                   else
                   res.status(403).send({
-                    message: "Require Any Role!"});
+                    message: "Requires Any Role!"});
               })
               .catch(error => {
                 return res.status(401).send({
@@ -181,11 +181,34 @@ isAny = (req, res, next) => {
               });
             }
            else
-              return res.status(401).send({
-                message: "Unauthorized! bad Token"
+           {
+            if (session.studnetId != null) {
+              Student.findByPk(session.studentId)
+                .then(data => {
+                    roles = data.dataValues.roles;
+                    if (roles=="Student") {
+                      next();
+                      return;
+                    } 
+                    else
+                    res.status(403).send({
+                      message: "Requires Any Role!"});
+                })
+                .catch(error => {
+                  return res.status(401).send({
+                    message: "Unauthorized! bad Token"
+                    });
                 });
+              }
+              else{
+                res.status(403).send({
+                  message: "No User in Session!"});
+              }
+           }
+
           });
         };
+
 const auth = {
   authenticate: authenticate,
   isAdmin: isAdmin,
