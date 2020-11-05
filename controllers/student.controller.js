@@ -46,7 +46,6 @@ exports.findAll = (req, res) => {
   } : null;
 
   Student.findAll({
-    include: ["degree","advisor"],
       where: condition
     })
     .then(data => {
@@ -63,7 +62,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  Student.findByPk(id)
+  Student.findByPk(id,{include: ["degree","advisor"]})
     .then(data => {
       res.send(data);
     })
