@@ -46,6 +46,7 @@ exports.findAll = (req, res) => {
   } : null;
 
   Student.findAll({
+    include: ["degree","advisor"],
       where: condition
     })
     .then(data => {

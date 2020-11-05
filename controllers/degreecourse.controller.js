@@ -33,10 +33,17 @@ exports.create = (req, res) => {
 
 // Retrieve all DegreeCourses from the database.
 exports.findAll = (req, res) => {
+  let condition =null;
   const courseId = req.query.courseId;
-  var condition = courseId ? {
+  condition = courseId ? {
     courseId: {
       [Op.like]: `%${courseId}%`
+    }
+  } : null;
+  const degreeId = req.query.degreeId;
+  condition = degreeId ? {
+    degreeId: {
+      [Op.like]: `%${degreeId}%`
     }
   } : null;
 
