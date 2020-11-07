@@ -40,12 +40,7 @@ exports.findAll = (req, res) => {
       [Op.like]: `%${courseId}%`
     }
   } : null;
-  const degreeId = req.query.degreeId;
-  condition = degreeId ? {
-    degreeId: {
-      [Op.like]: `%${degreeId}%`
-    }
-  } : null;
+
 
   DegreeCourse.findAll({
       include :["degree","course"],
