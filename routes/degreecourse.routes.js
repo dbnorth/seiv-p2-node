@@ -8,7 +8,7 @@ module.exports = app => {
   router.post("/", [authenticate,isAdmin],DegreeCourses.create);
 
   // Retrieve all DegreeCourses
-  router.get("/", [authenticate,isAdmin],DegreeCourses.findAll);
+  router.get("/", [authenticate,isAny],DegreeCourses.findAll);
 
   // Retrieve a single DegreeCourse with id
   router.get("/:id", [authenticate,isAdmin],DegreeCourses.findOne);
