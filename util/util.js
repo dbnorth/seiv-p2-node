@@ -217,13 +217,12 @@ isAdmin = (req, res, next) => {
                   message: "No User in Session!"});
               }
             };
-          }
-          )
-          .catch(error => {
+        })
+        .catch(error => {
             return res.status(401).send({
               message: "Unauthorized! bad Token"
             });
-          })
+        });
         };
  
 
