@@ -194,7 +194,7 @@ isAdmin = (req, res, next) => {
            }
            else
            {
-            if (session.studnetId != null) {
+            if (session.studentId != null) {
               Student.findByPk(session.studentId)
                 .then(data => {
                     roles = data.dataValues.roles;
@@ -216,7 +216,7 @@ isAdmin = (req, res, next) => {
                 res.status(403).send({
                   message: "No User in Session!"});
               }
-            };
+            }
           }
           )
           .catch(error => {
